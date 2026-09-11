@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "C:\\php\\php.exe",
+            "args": [
+                "C:\\Users\\ENERGY\\Documents\\aulas-php-laravel\\laravel-sou\\crud-carros\\artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}

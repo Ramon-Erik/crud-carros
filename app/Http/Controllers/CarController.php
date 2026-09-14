@@ -2,42 +2,61 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\car\StoreRequest;
-use App\Http\Requests\car\UpdateRequest;
-use App\Models\Car;
 use Illuminate\Http\Request;
-use App\Helpers\ApiResponse;
-use App\Http\Resources\CarResource;
+use App\Models\Car;
 
 class CarController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $res = CarResource::collection(Car::all());
-        return ApiResponse::success($res);
+        return Car::all();
     }
 
-    public function store(StoreRequest $request)
+    public function store(Request $request)
     {
-        $res = Car::create($request->validated());
-        return ApiResponse::success(new CarResource($res), 'Carro criado com sucesso', 201);
+        return Car::create($request->only(['name', 'model', 'manufacture_year', 'color']));
     }
 
-    public function show(Car $car)
+
+    public function show(int $id)
     {
-        $res = new CarResource($car);
-        return ApiResponse::success($res);
+        $car = Car::find($id);
+        if ($car) {
+            return $car;
+        }
+        return response()->json(['message' => 'Não encontrado',], 404);
     }
 
-    public function update(UpdateRequest $request, Car $car)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, int $id)
     {
-        $res = $car->save($request->validated());
-        return ApiResponse::success($res);
+        $car = Car::find($id);
+        if (!$car) {
+            return response()->json(['message' => 'Não encontrado',], 404);
+        }
+
+        $data = $request->only(['name', 'model', 'manufacture_year', 'color']);
+        $car->fill($data);
+        $car->save();
+        return $car;
     }
 
-    public function destroy(Car $car)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(int $id)
     {
-        $car->delete();
-        return response()->noContent();
+        $car = Car::find($id);
+
+        if ($car) {
+            $car->delete();
+            return response()->json(['message' => 'Carro deletado'], 204);
+        }
+        return response()->json(['message' => 'Não encontrado',], 404);
     }
 }

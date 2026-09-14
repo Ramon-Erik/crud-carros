@@ -15,24 +15,26 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|min_digits:3',
-            'model' => 'required',
-            'manufacture_year' => 'required|int',
-            'color' => 'required|string|max_digits:9'
+            'name' => 'sometimes|min:3|max:15',
+            'model' => 'sometimes|string|max:30',
+            'manufacture_year' => 'sometimes|integer',
+            'color' => 'sometimes|string|max:9'
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'O nome é obrigatório',
-            'name.min_digits' => 'O nome deve ter pelo menos 3 caracteres',
-            'model.required' => 'O modelo é obrigatório',
-            'manufacture_year.int' => 'O ano deve ser um valor inteiro',
-            'manufacture_year.required' => 'O ano é obrigatório',
-            'color.required' => 'O modelo é obrigatório',
-            'color.max_digits' => 'Cor de até 9 digitos (hexadecimal com # ou nome)',
-            'color.string' => 'A cor deve ser uma string'
+            'name.min' => 'O nome deve ter pelo menos :min caracteres.',
+            'name.max' => 'O nome não pode ter mais de :max caracteres.',
+
+            'model.string' => 'O modelo deve ser um texto.',
+            'model.max' => 'O modelo não pode ter mais de :max caracteres.',
+
+            'manufacture_year.integer' => 'O ano de fabricação deve ser um número inteiro.',
+
+            'color.string' => 'A cor deve ser um texto.',
+            'color.max' => 'A cor não pode ter mais de :max caracteres.',
         ];
     }
 }

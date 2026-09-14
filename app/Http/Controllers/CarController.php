@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\car\StoreRequest;
+use App\Http\Requests\car\UpdateRequest;
 use App\Models\Car;
+use Illuminate\Http\Request;
 
 class CarController extends Controller
 {
@@ -12,12 +14,12 @@ class CarController extends Controller
      */
     public function index()
     {
-        return Car::all();
+        return Car::paginate();
     }
 
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        return Car::create($request->only(['name', 'model', 'manufacture_year', 'color']));
+        return Car::create($request->validated());
     }
 
 
@@ -33,14 +35,14 @@ class CarController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $id)
+    public function update(UpdateRequest $request, int $id)
     {
         $car = Car::find($id);
         if (!$car) {
             return response()->json(['message' => 'Não encontrado',], 404);
         }
 
-        $data = $request->only(['name', 'model', 'manufacture_year', 'color']);
+        $data = $request->validated();
         $car->fill($data);
         $car->save();
         return $car;

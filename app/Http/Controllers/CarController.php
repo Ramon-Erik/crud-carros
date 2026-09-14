@@ -6,59 +6,38 @@ use App\Http\Requests\car\StoreRequest;
 use App\Http\Requests\car\UpdateRequest;
 use App\Models\Car;
 use Illuminate\Http\Request;
+use App\Helpers\ApiResponse;
+use App\Http\Resources\CarResource;
 
 class CarController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return Car::paginate();
+        $res = CarResource::collection(Car::all());
+        return ApiResponse::success($res);
     }
 
     public function store(StoreRequest $request)
     {
-        return Car::create($request->validated());
+        $res = Car::create($request->validated());
+        return ApiResponse::success(new CarResource($res), 'Carro criado com sucesso', 201);
     }
 
-
-    public function show(int $id)
+    public function show(Car $car)
     {
-        $car = Car::find($id);
-        if ($car) {
-            return $car;
-        }
-        return response()->json(['message' => 'Não encontrado',], 404);
+        $res = new CarResource($car);
+        return ApiResponse::success($res);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateRequest $request, int $id)
+    public function update(UpdateRequest $request, Car $car)
     {
-        $car = Car::find($id);
-        if (!$car) {
-            return response()->json(['message' => 'Não encontrado',], 404);
-        }
-
-        $data = $request->validated();
-        $car->fill($data);
-        $car->save();
-        return $car;
+        $res = $car->save($request->validated());
+        return ApiResponse::success($res);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(int $id)
+    public function destroy(Car $car)
     {
-        $car = Car::find($id);
-
-        if ($car) {
-            $car->delete();
-            return response()->json(['message' => 'Carro deletado'], 204);
-        }
-        return response()->json(['message' => 'Não encontrado',], 404);
+        $car->delete();
+        return response()->noContent();
     }
 }

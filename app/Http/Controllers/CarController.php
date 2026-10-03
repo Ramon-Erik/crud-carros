@@ -26,8 +26,8 @@ class CarController
     {
         $cars = Car::query()
             ->search($request->query('search'))
-            ->byColor($request->query('color'))
-            ->byYear($request->query('year'))
+            ->filterByColor($request->query('color'))
+            ->filterByYear($request->query('year'))
             ->orderBy(
                 $request->query('sortBy', 'name'),
                 $request->query('order', 'asc')

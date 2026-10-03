@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,7 +10,8 @@ class Car extends Model
 {
     protected $fillable = ['name', 'model', 'year', 'color'];
 
-    public function scopeByColor(Builder $query, ?string $color)
+    #[Scope]
+    public function filterByColor(Builder $query, ?string $color)
     {
         if ($color) {
             return $query->where('color', $color);
@@ -18,7 +20,8 @@ class Car extends Model
 
     }
 
-    public function scopeByYear(Builder $query, ?string $year)
+    #[Scope]
+    public function filterByYear(Builder $query, ?string $year)
     {
         if ($year) {
             return $query->where('year', $year);
@@ -26,7 +29,8 @@ class Car extends Model
         return $query;
     }
 
-    public function scopeOrder(Builder $query, ?string $column, ?string $direction)
+    #[Scope]
+    public function order(Builder $query, ?string $column, ?string $direction)
     {
         if ($column && $direction) {
             return $query->orderBy($column, $direction);
@@ -34,7 +38,8 @@ class Car extends Model
         return $query;
     }
 
-    public function scopeSearch(Builder $query, ?string $value)
+    #[Scope]
+    public function search(Builder $query, ?string $value)
     {
         if ($value) {
             return $query->whereAny(
